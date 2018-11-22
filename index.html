@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>JS + CSS Clock</title>
+  </head>
+  <body>
+    <div class="clock">
+      <div class="clock-face">
+        <div class="hand hour-hand"></div>
+        <div class="hand min-hand"></div>
+        <div class="hand second-hand"></div>
+      </div>
+    </div>
+
+    <style>
+      html {
+        background: #018ded url(http://unsplash.it/1500/1000?image=881&blur=50);
+        background-size: cover;
+        font-family: "helvetica neue";
+        text-align: center;
+        font-size: 10px;
+      }
+
+      body {
+        margin: 0;
+        font-size: 2rem;
+        display: flex;
+        flex: 1;
+        min-height: 100vh;
+        align-items: center;
+      }
+
+      .clock {
+        width: 30rem;
+        height: 30rem;
+        border: 20px solid white;
+        border-radius: 50%;
+        margin: 50px auto;
+        position: relative;
+        padding: 2rem;
+        box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.1), inset 0 0 0 3px #efefef,
+          inset 0 0 10px black, 0 0 10px rgba(0, 0, 0, 0.2);
+      }
+
+      .clock-face {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transform: translateY(
+          -3px
+        ); /* account for the height of the clock hands */
+      }
+
+      .hand {
+        width: 50%;
+        height: 6px;
+        background: black;
+        position: absolute;
+        top: 50%;
+      }
+
+      .hour-hand,
+      .min-hand,
+      .second-hand {
+        transform-origin: 100%;
+        transform: rotate(90deg);
+      }
+
+      .hand.hour-hand {
+        width: 30%;
+        left: 20%;
+        background: green;
+        z-index: 99;
+      }
+
+      .hand.min-hand {
+        background: red;
+      }
+
+      .hand.second-hand {
+        height: 3px;
+      }
+    </style>
+
+    <script>
+      var hour = document.querySelector(".hour-hand");
+      var min = document.querySelector(".min-hand");
+      var second = document.querySelector(".second-hand");
+
+      function hourToDeg(hour, min) {
+        var hourStart = 90;
+        if (hour > 12) {
+          return hourStart + (hour - 12) * 30 + min * 0.5;
+        } else {
+          return hourStart + hour * 30 + min * 0.5;
+        }
+      }
+
+      function minToDeg(min) {
+        var minStart = 90;
+        if (minStart + min * 6 > 360) {
+          return minStart + min * 6 - 360;
+        } else {
+          return minStart + min * 6;
+        }
+      }
+
+      function secondToDeg(sec) {
+        var secStart = 90;
+        if (secStart + sec * 6 > 360) {
+          return secStart + sec * 6 - 360;
+        } else {
+          return secStart + sec * 6;
+        }
+      }
+
+      (function init() {
+        var current = new Date();
+
+        var curHour = current.getHours();
+        var curMin = current.getMinutes();
+        var curSec = current.getSeconds();
+
+        console.log(curHour);
+        console.log(curMin);
+        console.log(curSec);
+
+        var hourDeg = hourToDeg(curHour, curMin);
+        var minDeg = minToDeg(curMin);
+        var secDeg = secondToDeg(curSec);
+
+        hour.style.transform = `rotate(${hourDeg}deg)`;
+        min.style.transform = `rotate(${minDeg}deg)`;
+        second.style.transform = `rotate(${secDeg}deg)`;
+
+        // setInterval(function() {
+        //   if (hourDeg < 360) {
+        //     hourDeg += 30;
+        //     hour.style.transform = `rotate(${hourDeg}deg)`;
+        //   } else {
+        //     hourDeg = 0;
+
+        //     hour.style.transform = `rotate(${hourDeg}deg)`;
+        //   }
+        // }, 3600000);
+
+        // setInterval(function() {
+        //   if (minDeg < 360) {
+        //     minDeg += 6;
+        //     min.style.transform = `rotate(${minDeg}deg)`;
+        //   } else {
+        //     minDeg = 0;
+
+        //     min.style.transform = `rotate(${minDeg}deg)`;
+        //   }
+        // }, 60000);
+
+        setInterval(function() {
+          if (secDeg < 360) {
+            secDeg += 6;
+            second.style.transform = `rotate(${secDeg}deg)`;
+          } else {
+            secDeg += 6;
+            secDeg -= 360;
+
+            second.style.transform = `rotate(${secDeg}deg)`;
+          }
+
+          if (minDeg < 360) {
+            minDeg += 0.1;
+            min.style.transform = `rotate(${minDeg}deg)`;
+          } else {
+            minDeg += 0.1;
+            minDeg -= 360;
+
+            min.style.transform = `rotate(${minDeg}deg)`;
+          }
+
+          if (hourDeg < 360) {
+            hourDeg += 0.0083;
+            hour.style.transform = `rotate(${hourDeg}deg)`;
+          } else {
+            hourDeg += 0.0083;
+            hourDeg -= 360;
+
+            hour.style.transform = `rotate(${hourDeg}deg)`;
+          }
+        }, 1000);
+      })();
+
+      // var deg = 0;
+      // setInterval(function() {
+      //   deg += 30;
+      //   hour.style.transform = `rotate(${deg}deg)`;
+      // }, 1000);
+    </script>
+  </body>
+</html>
